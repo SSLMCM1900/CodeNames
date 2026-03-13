@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Impostazioni</title>
+  <style>
+    /* --- STILI GLOBALI --- */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* --- CENTRATURA SCHERMATA --- */
+    .schermata {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      width: 100vw;
+      flex-direction: column;
+    }
+
+    .container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 350px;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* --- FORM --- */
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      background-color: #4CAF50;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.2s;
+    }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+    /* --- SCHERMATA GRIGLIA --- */
+    #grigliaSchermata {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+      height: 100vh;
+      gap: 10px;
+      padding-top: 20px;
+      box-sizing: border-box;
+    }
+
+    /* --- GRIGLIA --- */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr); /* colonne uguali */
+      grid-template-rows: repeat(5, 1fr); /* righe uguali */
+      gap: 5px;
+      width: 90vw;
+      max-width: 500px;
+      aspect-ratio: 1 / 1; /* griglia quadrata */
+    }
+
+    /* --- TILE --- */
+    .tile {
+      width: 100%;
+      aspect-ratio: 1 / 1; /* altezza uguale alla larghezza */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      border-radius: 8px;
+      border: 2px solid #ccc;
+      cursor: pointer;
+      user-select: none;
+      font-weight: bold;
+      font-size: clamp(12px, 2vw, 16px); /* testo scalabile */
+      box-sizing: border-box;
+      position: relative;
+    }
+
+      /* --- TILE ATTIVO --- */
+      .tile.active {
+        color: white;
+      }
+
+    /* --- MARK X --- */
+    .xmark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 60px;
+      color: black;
+    }
+
+    /* --- MEDIA QUERY PER MOBILE MOLTO PICCOLO --- */
+    @media (max-width: 400px) {
+      .grid {
+        gap: 3px;
+      }
+
+      .tile {
+        font-size: 10px;
+      }
+
+      button, input, select {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SCHERMATA IMPOSTAZIONI -->
+  <div class="schermata" id="pannelloImpostazioni">
+    <div class="container">
+      <h1>Impostazioni</h1>
+      <form>
+        <div class="form-group" id="campoparola">
+          <label for="parola">Inserisci Parola d'ordine</label>
+          <input type="text" id="parola" name="parola"
+                 oninput="this.value=this.value.replace(/[^A-Za-z0-9]/g,'').toUpperCase()" required>
+        </div>
+
+        <div class="form-group" id="contenitoreruolo">
+          <label id="lblruolo" for="selezionaruolo">Sei il capitano?</label>
+          <select id="selezionaruolo">
+            <option value="NESSUNASELEZIONE" selected>NESSUNA SELEZIONE</option>
+            <option value="NO">NO</option>
+            <option value="SI">SI</option>
+          </select>
+        </div>
+
+        <button id="bottoneAvanti" type="button">Avanti</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- SCHERMATA GRIGLIA -->
+  <div id="grigliaSchermata">
+    <h2 id="titoloGriglia">Titolo della Griglia</h2>
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <script>
+    // LISTA PAROLE
+    const paroledoppie = [
+      "acqua", "aereo", "agente", "ago", "albero", "alieno", "amico", "anello", "angelo", "antenna",
+      "ape", "aquila", "arancia", "arco", "argento", "arma", "armadio", "arte", "asino", "astro",
+      "atleta", "attore", "auto", "avvocato", "banca", "barca", "barone", "base", "bastone", "batteria",
+      "becco", "belva", "benzina", "bicchiere", "bicicletta", "biglietto", "birra", "biscia", "biscotto", "blu",
+      "bocca", "bomba", "bosco", "bottiglia", "braccio", "bravo", "brezza", "brigante", "brocca", "bronzo",
+      "bruco", "buco", "buffalo", "burro", "busta", "cacao", "cactus", "caffè", "calcio", "caldo",
+      "calice", "calma", "camera", "camino", "campana", "campo", "cane", "cannone", "capello", "capra",
+      "capriolo", "carbone", "carota", "carro", "carta", "cartone", "casa", "castello", "cavallo", "cavo",
+      "ceppo", "cera", "cervo", "chiave", "chiodo", "chitarra", "cielo", "cinghia", "cipolla", "circo",
+      "città", "classe", "cobra", "coda", "collina", "collo", "colore", "coltello", "cometa", "computer",
+      "conchiglia", "conto", "corallo", "corda", "corona", "corpo", "corsa", "corte", "cosa", "costa",
+      "cratere", "crema", "cristallo", "coccodrillo", "cubo", "cucchiaio", "cugino", "cuore", "cupola", "cura",
+      "dado", "dama", "dente", "deserto", "diamante", "diga", "dito", "divano", "dollaro", "domino",
+      "dono", "dorso", "drago", "dramma", "droga", "duna", "duomo", "eco", "edera", "elmo",
+      "energia", "erba", "erede", "eroe", "errore", "esame", "esercito", "estate", "etere", "fabbro",
+      "fagiolo", "falco", "fame", "fango", "fantasma", "farmacia", "faro", "fascio", "fata", "fazzoletto",
+      "ferro", "festa", "fiaba", "fiammifero", "fiore", "fiume", "flauto", "flotta", "foglia", "forchetta",
+      "foresta", "forma", "forno", "fortuna", "foto", "fragola", "fratello", "freccia", "freddo", "freno",
+      "frigo", "fronte", "frutto", "fucile", "fumo", "fungo", "fuoco", "furto", "gabbia", "gallo",
+      "gamba", "gancio", "garage", "gatto", "gemma", "genio", "gesso", "ghiaccio", "ghiro", "giacca",
+      "giardino", "gigante", "giglio", "giorno", "giudice", "giungla", "giusto", "globo", "gnomo", "goccia",
+      "gola", "gomma", "gonna", "gorgo", "gorilla", "grazia", "grillo", "gruppo", "guanto", "guardia",
+      "gufo", "guerra", "guida", "guru", "iceberg", "idea", "idolo", "impero", "inchiostro", "indice",
+      "infanzia", "inferno", "ingranaggio", "isola", "jet", "joker", "karaoke", "kayak", "kiwi", "lama",
+      "lampada", "lana", "lancia", "lanterna", "largo", "lava", "lavoro", "leone", "lettera", "leva",
+      "libro", "limone", "linea", "lingua", "lira", "lista", "lite", "lobo", "luce", "luna",
+      "lupo", "macchina", "madre", "magia", "magnete", "magro", "maiale", "mais", "malattia", "mano",
+      "mappa", "mare", "marmo", "martello", "maschera", "massa", "matita", "mela", "memoria", "mercato",
+      "merlo", "metallo", "metro", "mezzo", "miele", "miniera", "ministro", "miraggio", "missile", "moda",
+      "modello", "molecola", "moneta", "montagna", "monumento", "mora", "morte", "mosca", "mossa", "motore",
+      "muro", "muscolo", "museo", "musica", "nave", "nebbia", "negozio", "neve", "nido", "ninja",
+      "nodo", "nome", "notte", "nuvola", "oceano", "occhio", "odore", "offerta", "ombra", "onda",
+      "opera", "oro", "orso", "orto", "osso", "ostrica", "ovest", "ovile", "pacco", "padre",
+      "paese", "palazzo", "palla", "palma", "pane", "pantera", "papera", "parco", "parete", "parola",
+      "passo", "pasta", "patata", "paura", "pavone", "pece", "pecora", "penna", "pesce", "petalo",
+      "pianeta", "piano", "piede", "pietra", "pigna", "pilota", "pinna", "pioggia", "pipa", "pirata",
+      "piramide", "pistola", "pizza", "plastica", "poesia", "polizia", "pollo", "polvere", "ponte", "porta",
+      "porto", "pozzo", "prato", "preda", "principe", "prisma", "proiettile", "profumo", "programma", "prova",
+      "psiche", "pugno", "pulce", "pulizia", "puma", "punto", "quadro", "quercia", "quota", "radice",
+      "radio", "ragno", "ragazzo", "ramo", "rana", "rapina", "raggio", "razzo", "re", "regalo",
+      "regina", "rete", "riccio", "riga", "riso", "ritmo", "roccia", "robot", "rospo", "rosa",
+      "rotaia", "ruota", "sabbia", "sacco", "sagoma", "sale", "salto", "sangue", "sasso", "scala",
+      "scatola", "scena", "scienza", "scimmia", "scudo", "seme", "serpente", "servo", "sfera", "sfida",
+      "sguardo", "siero", "sigaro", "silenzio", "simbolo", "sirena", "sistema", "slitta", "smeraldo", "sogno",
+      "sole", "soldato", "soluzione", "sonno", "sorgente", "sorriso", "spada", "spalla", "spazio", "specchio",
+      "speranza", "spezie", "spia", "spina", "spirito", "spugna", "squadra", "stadio", "stella", "stivale",
+      "stoffa", "storia", "strada", "strega", "studio", "succo", "sud", "sultano", "suono", "superficie",
+      "squalo", "tacco", "tappeto", "tavolo", "tazza", "teatro", "telefono", "tempio", "tempo", "tenebra",
+      "tenda", "tenente", "tennis", "terra", "tesoro", "testa", "tigre", "tinta", "tizio", "torcia",
+      "torre", "torta", "toro", "torpedo", "tovaglia", "traccia", "trappola", "treno", "triangolo", "trono",
+      "tromba", "tronco", "trovata", "tubo", "tulipano", "tuono", "turbina", "tuta", "uccello", "ufficio",
+      "ulivo", "uomo", "urna", "uva", "valanga", "valle", "valvola", "vapore", "vasca", "vela",
+      "veleno", "vento", "verme", "vetro", "viaggio", "vicolo", "vigna", "villa", "vino", "violino",
+      "vipera", "virus", "visione", "vita", "vite", "vittoria", "voce", "volcano", "volpe", "volta",
+      "zaino", "zampa", "zattera", "zebra", "zen", "zero", "zoccolo", "zolfo", "zoo", "zucca"
+    ];
+
+    // Creare una nuova lista senza duplicati
+    const parole = paroledoppie.filter((item, index) => {
+      return paroledoppie.indexOf(item) === index;
+    });
+
+    let ruolo = "";
+    const selezionaruolo = document.getElementById("selezionaruolo");
+    const titologriglia = document.getElementById("titoloGriglia");
+    // HASH STRING → SEED
+    function stringToSeed(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = (hash << 5) - hash + str.charCodeAt(i);
+        hash |= 0;
+      }
+      return hash >>> 0;
+    }
+
+    // PRNG deterministico
+    function mulberry32(seed) {
+      return function () {
+        seed |= 0;
+        seed = seed + 0x6D2B79F5 | 0;
+        let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      }
+    }
+
+    // ESTRAE M ELEMENTI PSEUDOCASUALI
+    function pickSeeded(list, m, password) {
+      const seed = stringToSeed(password);
+      const rand = mulberry32(seed);
+      const arr = [...list];
+      const result = [];
+      for (let i = 0; i < m && arr.length > 0; i++) {
+        const index = Math.floor(rand() * arr.length);
+        result.push(arr[index]);
+        arr.splice(index, 1);
+      }
+      return result;
+    }
+
+    // CREA GRIGLIA
+    function generaGriglia() {
+      const password = document.getElementById("parola").value;
+      if (password.length == 0) {
+        alert("Inserisci una parola d'ordine");
+        return;
+      }
+      if (selezionaruolo.value == "NESSUNASELEZIONE") {
+        alert("Inserisci un ruolo");
+        return;
+      } else {
+        if (selezionaruolo.value == "SI") {
+          ruolo = "Capitano";
+
+        }
+        else {
+          ruolo = "Civile";
+        }
+
+      }
+      function controllaVittoria() {
+        const tiles = document.querySelectorAll(".tile");
+        let bluSelezionate = true;
+        let rosseSelezionate = true;
+        let neraCliccata = false;
+
+        tiles.forEach(t => {
+          const colore = t.dataset.colore;
+          const selez = t.dataset.selezionato === "true";
+
+          if (colore === "blu" && !selez) bluSelezionate = false;
+          if (colore === "rosso" && !selez) rosseSelezionate = false;
+          if (colore === "nero" && selez) neraCliccata = true;
+        });
+
+        if (neraCliccata) {
+          alert("Hai cliccato la casella nera, la tua squadra ha perso!");
+        } else if (bluSelezionate) {
+          alert("Hanno vinto i blu!");
+        } else if (rosseSelezionate) {
+          alert("Hanno vinto i rossi!");
+        }
+      }
+
+      // NASCONDE LE IMPOSTAZIONI
+      document.getElementById("pannelloImpostazioni").style.display = "none";
+
+      // MOSTRA LA GRIGLIA
+      document.getElementById("grigliaSchermata").style.display = "flex";
+
+      const grid = document.getElementById("grid");
+      grid.innerHTML = "";
+
+      const estratti = pickSeeded(parole, 25, password);
+
+      const tessereColor = generaTessere(password); // ottieni i colori
+
+      estratti.forEach((parola, idx) => {
+        const tile = document.createElement("div");
+        tile.className = "tile";
+        tile.textContent = parola;
+
+        tile.dataset.colore = tessereColor[idx + 1];
+        tile.dataset.mostra = "false";
+        tile.dataset.selezionato = "false"; // nuova proprietà per controllare selezione
+
+        if (ruolo === "Capitano") {
+          // Mostra subito i colori
+          switch (tile.dataset.colore) {
+            case 'blu': tile.style.background = "#2196F3"; tile.style.color = "white"; break;
+            case 'rosso': tile.style.background = "#F44336"; tile.style.color = "white"; break;
+            case 'nero': tile.style.background = "#000"; tile.style.color = "white"; break;
+            case 'giallo': tile.style.background = "#FFEB3B"; tile.style.color = "black"; break;
+          }
+
+          tile.onclick = function () {
+            if (tile.dataset.selezionato === "false") {
+              // Aggiunge la X nera gigante
+              const x = document.createElement("div");
+              x.className = "xmark";
+              x.textContent = "✖";
+              x.style.position = "absolute";
+              x.style.top = "0";
+              x.style.left = "0";
+              x.style.width = "100%";
+              x.style.height = "100%";
+              x.style.display = "flex";
+              x.style.alignItems = "center";
+              x.style.justifyContent = "center";
+              x.style.fontSize = "60px";
+              x.style.color = "black";
+              tile.style.position = "relative"; // importante
+              tile.appendChild(x);
+
+              tile.dataset.selezionato = "true";
+              controllaVittoria();
+            }
+          };
+
+        } else {
+          // Civile: parte neutra
+          tile.style.background = "white";
+          tile.style.color = "black";
+
+          tile.onclick = function () {
+            if (tile.dataset.mostra === "false") {
+              switch (tile.dataset.colore) {
+                case 'blu': tile.style.background = "#2196F3"; tile.style.color = "white"; break;
+                case 'rosso': tile.style.background = "#F44336"; tile.style.color = "white"; break;
+                case 'nero': tile.style.background = "#000"; tile.style.color = "white"; break;
+                case 'giallo': tile.style.background = "#FFEB3B"; tile.style.color = "black"; break;
+              }
+              tile.dataset.mostra = "true";
+              tile.dataset.selezionato = "true";
+
+              controllaVittoria();
+            }
+          };
+        }
+
+        grid.appendChild(tile);
+      });
+      // Funzione per controllare vittoria o sconfitta
+
+    }
+
+    document.getElementById("bottoneAvanti").onclick = generaGriglia;
+    function generaTessere(password) {
+      const seed = stringToSeed(password);
+      const rand = mulberry32(seed);
+
+      // 1..25
+      let numeri = Array.from({ length: 25 }, (_, i) => i + 1);
+
+      // mescola pseudocasuale
+      for (let i = numeri.length - 1; i > 0; i--) {
+        const j = Math.floor(rand() * (i + 1));
+        [numeri[i], numeri[j]] = [numeri[j], numeri[i]];
+      }
+
+      // Dividi i numeri
+      const gruppo1 = numeri.slice(0, 9);  // 9 tessere
+      const gruppo2 = numeri.slice(9, 17); // 8 tessere
+      const gruppo3 = numeri.slice(17, 18); // 1 tessera nera
+      const gruppo4 = numeri.slice(18, 25); // 7 tessere gialle
+
+      // Decide casualmente quale colore inizia
+      const primoColore = rand() < 0.5 ? 'blu' : 'rosso';
+      const secondoColore = primoColore === 'blu' ? 'rosso' : 'blu';
+      if (primoColore == 'rosso') {
+        titologriglia.textContent = "Inizia squadra blu";
+        titologriglia.style.color="blue"
+      } else {
+        titologriglia.textContent = "Inizia squadra rossa"
+        titologriglia.style.color = "red"
+      }
+      // Mescola interno gruppo1 per assegnare colore
+      const gruppo1Color = [];
+      for (let i = 0; i < 9; i++) {
+        gruppo1Color.push(i < 4 ? primoColore : secondoColore); // 4-5 tessere per bilanciare 50/50
+      }
+      // shuffle interno pseudocasuale
+      for (let i = gruppo1Color.length - 1; i > 0; i--) {
+        const j = Math.floor(rand() * (i + 1));
+        [gruppo1Color[i], gruppo1Color[j]] = [gruppo1Color[j], gruppo1Color[i]];
+      }
+
+      // Gruppo2 → opposto
+      const gruppo2Color = [];
+      for (let i = 0; i < 8; i++) {
+        gruppo2Color.push(i < 4 ? secondoColore : primoColore); // 4-4
+      }
+      for (let i = gruppo2Color.length - 1; i > 0; i--) {
+        const j = Math.floor(rand() * (i + 1));
+        [gruppo2Color[i], gruppo2Color[j]] = [gruppo2Color[j], gruppo2Color[i]];
+      }
+
+      // Gruppo3 → nero
+      const gruppo3Color = ['nero'];
+
+      // Gruppo4 → giallo
+      const gruppo4Color = Array(7).fill('giallo');
+
+      // Assegna colori agli indici
+      const tessere = {};
+      for (let i = 0; i < 9; i++) { tessere[gruppo1[i]] = gruppo1Color[i]; }
+      for (let i = 0; i < 8; i++) { tessere[gruppo2[i]] = gruppo2Color[i]; }
+      tessere[gruppo3[0]] = 'nero';
+      for (let i = 0; i < 7; i++) { tessere[gruppo4[i]] = 'giallo'; }
+
+      return tessere; // oggetto {numero: colore}
+    }
+
+
+  </script>
+</body>
+</html>
