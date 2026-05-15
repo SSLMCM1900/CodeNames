@@ -166,13 +166,26 @@
         <div class="form-group" id="grandezza">
           <label id="lblgrandezza" for="grandezzagriglia">Grandezza Griglia</label>
           <select id="grandezzagriglia">
-            <option value="9" >PICCOLISSIMA (3x3)</option>
+            <option value="9">PICCOLISSIMA (3x3)</option>
             <option value="16">PICCOLA (4x4)</option>
             <option value="25" selected>DEFAULT (5x5)</option>
             <option value="36">GRANDE (6x6)</option>
             <option value="49">GRANDISSIMA (7x7)</option>
           </select>
         </div>
+
+
+        <div class="form-group" id="contenitoretipoparole">
+          <label id="lbltipoparole" for="selezionatipoparole">SELEZIONA TIPO PAROLE</label>
+          <select id="selezionatipoparole">
+         
+            <option value="NORMALI">NORMALI</option>
+            <option value="CALCIO">CALCIO</option>
+          </select>
+        </div>
+
+
+
         <div class="form-group" id="camponumeroparole1">
           <label for="numeroparole1">Numero Parole Squadra Iniziale</label>
           <input type="number" id="numeroparole1" name="numeroparole1"
@@ -189,6 +202,11 @@
                  step="1" value="1" required>
         </div>
 
+
+
+
+
+
         <div class="form-group" id="contenitoreruolo">
           <label id="lblruolo" for="selezionaruolo">Sei il capitano?</label>
           <select id="selezionaruolo">
@@ -197,6 +215,7 @@
             <option value="SI">SI</option>
           </select>
         </div>
+
         <div class="form-group" id="campoparola">
           <label for="parola">Inserisci Parola d'ordine</label>
           <input type="text" id="parola" name="parola"
@@ -209,8 +228,13 @@
 
   <!-- SCHERMATA GRIGLIA -->
   <div id="grigliaSchermata">
-    <h2 id="titoloGriglia">Titolo della Griglia</h2>
+    <div id="countersContainer" style="width: 90vw; max-width: 500px; display: flex; justify-content: space-between; margin-bottom: 10px;">
+      <div id="bluCounter" style="font-weight:bold; color:#2196F3;">Blu: 0</div>
+
+      <div id="rossoCounter" style="font-weight:bold; color:#F44336;">Rosso: 0</div>
+    </div>
     <div class="grid" id="grid"></div>
+
   </div>
 
   <script>
@@ -270,16 +294,278 @@
       "ulivo", "uomo", "urna", "uva", "valanga", "valle", "valvola", "vapore", "vasca", "vela",
       "veleno", "vento", "verme", "vetro", "viaggio", "vicolo", "vigna", "villa", "vino", "violino",
       "vipera", "virus", "visione", "vita", "vite", "vittoria", "voce", "volcano", "volpe", "volta",
-      "zaino", "zampa", "zattera", "zebra", "zen", "zero", "zoccolo", "zolfo", "zoo", "zucca"
-    ];
+      "zaino", "zampa", "zattera", "zebra", "zen", "zero", "zoccolo", "zolfo", "zoo", "zucca",
+   
+      "acero", "aglio", "alce", "ambra", "anatra", "archivio", "armonica", "asilo", "atollo", "aula",
+      "baco", "bambino", "banca", "bastone", "battello", "baule", "bello", "biberon", "bicchiere", "bivio",
+      "blocco", "borsa", "botte", "branca", "brina", "bruma", "bufalo", "bugia", "bullo", "burrone",
+      "cane", "canna", "canto", "capanno", "capitano", "carrozza", "casco", "castagna", "catena", "cedro",
+      "centro", "cerchio", "cervo", "ciliegia", "cinghiale", "cintura", "civetta", "cocco", "colomba", "conchiglia",
+      "corda", "corsa", "coscia", "covo", "cresta", "cromo", "cucciolo", "cubetto", "cucina", "cuneo",
+      "dado", "daino", "dama", "dente", "desco", "diadema", "diga", "dito", "divano", "doccia",
+      "dorso", "drappo", "duca", "eco", "edera", "elica", "emiro", "erba", "eremo", "esca",
+      "faggio", "falena", "faro", "fiume", "fiocco", "foglio", "forca", "forno", "fresco", "frutto",
+      "gabbiano", "gabbia", "gallo", "gambero", "gancio", "gatto", "gemello", "ghianda", "ghiaccio", "giglio",
+      "ginnasta", "giostra", "giudice", "gnocco", "goccia", "gola", "gomitolo", "gorgo", "gorilla", "grana",
+      "granchio", "grano", "gufo", "guscio", "hotel", "idea", "idolo", "ignoto", "imbuto", "insetto",
+      "isola",  "kebab", "koala", "lampo", "lavoro", "leccia", "legno", "lente",
+      "libellula", "lido", "lira", "lupo", "macina", "marea", "martello", "maschera", "matrice", "mela",
+      "mimosa", "miniera", "moneta", "montone", "mosca", "motivo", "muro", "musica", "nave", "nebbia",
+      "nido", "noce", "nodo", "nome", "notte", "nuvola", "occhio", "olio", "onda", "osso",
+      "ovetto", "pacco", "palco", "panda", "panino", "parco", "passero", "pasta", "pavimento", "pecora",
+      "pendolo", "pesca", "petalo", "piano", "piede", "pietra", "pigna", "pineta", "pipistrello", "piuma",
+      "poeta", "polipo", "ponte", "porta", "pozzo", "prato", "preda", "principe", "profumo", "prova",
+      "quadro", "quercia", "quinto", "radice", "raggio", "rana", "rapace", "razzo", "re", "regina",
+      "rete", "riccio", "riso", "rospo", "rosa", "ruota", "sabbia", "sacco", "sale", "salto",
+      "sangue", "sasso", "scatola", "scena", "scimmia", "scopa", "seme", "serpente", "sfera", "sogno",
+      "sole", "sonno", "sorgente", "sorriso", "spada", "spalla", "spazio", "specchio", "spina", "spirito",
+      "stella", "stivale", "strada", "strega", "studio", "succo", "suono", "tappeto", "tavolo", "tazza",
+      "teatro", "telefono", "tempio", "tenebra", "tenda", "tesoro", "testa", "tigre", "torre", "tovaglia",
+      "traccia", "trappola", "treno", "triangolo", "tronco", "tulipano", "tuono", "uccello", "ufficio", "ulivo",
+      "uomo", "urna", "uva", "valanga", "valle", "valvola", "vapore", "vasca", "vela", "veleno",
+      "vento", "verme", "vetro", "viaggio", "vicolo", "vigna", "villa", "vino", "violino", "vipera",
+      "virus", "visione", "vita", "vite", "vittoria", "voce", "volcano", "volpe", "volta", "zaino",
+      "zampa", "zattera", "zebra", "zen", "zero", "zoccolo", "zolfo", "zoo", "zucca"
 
+      ,"abete", "acciaio", "acino", "adagio", "affresco", "alga", "alloro", "amaca", "anfora", "anima",
+      "aquilone", "aratro", "arco", "arenaria", "argilla", "asino", "attico", "autobus", "avena", "bacche",
+      "bagno", "balena", "balestra", "bambù", "barile", "barista", "basilico", "batuffolo", "battaglia", "becco",
+      "belvedere", "bentornato", "berretto", "bicicletta", "bidone", "biga", "bisonte", "bizzarro", "blocco", "boato",
+      "boccale", "bollitore", "borotalco", "braciere", "branca", "brio", "brodo", "bruma", "bucato", "bussola",
+      "cactus", "caglia", "cala", "calice", "cammello", "candela", "canguro", "cannone", "cappello", "capriolo",
+      "carapace", "carovana", "carrucola", "cascata", "castagna", "cattedra", "cavalletto", "cavità", "ceppo", "cerbiatto",
+      "cerotto", "cespuglio", "chiocciole", "chiosco", "cianfrusaglia", "cilindro", "cinghiale", "cintola", "civetta", "cocco",
+      "codice", "colomba", "colosseo", "conchiglia", "contadino", "corda", "corno", "corteccia", "corteo", "covo",
+      "crema", "crocetta", "crusca", "cucciolo", "cucchiaio", "cuneo", "cupola", "daino", "darsena", "decoro",
+      "dentice", "deserto", "diamante", "diavolo", "diga", "dinosauro", "dito", "divano", "doccia", "dolce",
+      "doppio", "dorso", "drago", "dramma", "duomo", "eco", "edera", "elmo", "elisir", "emozione",
+      "erba", "eremo", "erica", "esame", "estate", "eterna", "fagiano", "falena", "fango", "fantasia",
+      "farfalla", "faro", "fascia", "fata", "favola", "fazzoletto", "ferro", "fetta", "fiaba", "fiammifero",
+      "fieno", "figura", "filo", "fiume", "fiocco", "fiore", "flauto", "foglia", "forca", "forno",
+      "fortino", "foto", "fragola", "frangia", "fratello", "freccia", "freddo", "fronda", "frutto", "fucile",
+      "fumo", "fungo", "fuoco", "furto", "gabbia", "gallo", "gamba", "gancio", "garage", "gatto",
+      "gemma", "genio", "gesso", "ghiaccio", "ghiro", "giacca", "giardino", "gigante", "giglio", "giornale",
+      "giostra", "giudice", "giungla", "globo", "gnomo", "goccia", "gola", "gomma", "gonna", "gorgo",
+      "gorilla", "grazia", "grillo", "gruppo", "guanto", "guardia", "gufo", "guerra", "guida", "guru",
+      "iceberg", "idea", "idolo", "impero", "inchiostro", "indice", "infanzia", "inferno", "ingranaggio", "isola",
+      "jet", "joker", "karaoke", "kayak", "kiwi", "lama", "lampada", "lana", "lancia", "lanterna",
+      "largo", "lava", "lavoro", "leone", "lettera", "leva", "libro", "limone", "linea", "lingua",
+      "lira", "lista", "lite", "lobo", "luce", "luna", "lupo", "macchina", "madre", "magia",
+      "magnete", "magro", "maiale", "mais", "malattia", "mano", "mappa", "mare", "marmo", "martello",
+      "maschera", "massa", "matita", "mela", "memoria", "mercato", "merlo", "metallo", "metro", "mezzo",
+      "miele", "miniera", "ministro", "miraggio", "missile", "moda", "modello", "molecola", "moneta", "montagna",
+      "monumento", "mora", "morte", "mosca", "mossa", "motore", "muro", "muscolo", "museo", "musica",
+      "nave", "nebbia", "negozio", "neve", "nido", "ninja", "nodo", "nome", "notte", "nuvola",
+      "oceano", "occhio", "odore", "offerta", "ombra", "onda", "opera", "oro", "orso", "orto",
+      "osso", "ostrica", "ovest", "ovile", "pacco", "padre", "paese", "palazzo", "palla", "palma",
+      "pane", "pantera", "papera", "parco", "parete", "parola", "passo", "pasta", "patata", "paura",
+      "pavone", "pece", "pecora", "penna", "pesce", "petalo", "pianeta", "piano", "piede", "pietra",
+      "pigna", "pilota", "pinna", "pioggia", "pipa", "pirata", "piramide", "pistola", "pizza", "plastica"
+    ];
+    const paroledoppiegiocatori = [
+      "Abate", "Adani", "Adriano", "Agbonlahor", "Alaba", "Albiol", "Alemao", "Alonso",
+      "Amoruso", "Anderson", "Andreolli", "Ansaldi", "Antonelli", "Aquilani", "Arnautovic", "Asamoah",
+      "Asensio", "Aubameyang", "Ayew", "Babel", "Babacar", "Badelj", "Baggio", "Bailey", "Balbo", "Balotelli",
+      "Barella", "Barbieri", "Barreto", "Barzagli", "Baselli", "Batistuta", "Beasley", "Beckham", "Belfodil",
+      "Benali", "Benassi", "Berardi", "Bergomi", "Berisha", "Bianchi", "Bierhoff", "Biglia",
+      "Birindelli", "Blasi", "Bogdani", "Bonanni", "Bonaventura", "Boniek", "Boninsegna", "Bonucci", "Mayoral",
+      "BorjaValero", "Borriello", "Bovo", "Branca", "Brighi", "Brozovic", "Bruno", "Brunori", "Buffon",
+      "Burdisso", "Busquets", "Caceres", "Cafu", "Callejon", "Cambiaso", "Cambiasso", "Candreva", "Canales",
+      "Cassano", "Castan", "Cavani", "Centurion", "Cerci", "Cerri", "Chalanoglu", "Chiesa", "Chivu",
+      "Christensen", "Cisse", "Colombo", "Coman", "Comotto", "Conti", "Correa", "Costa", "Costacurta", "Coutinho",
+      "Cragno", "Criscito", "Cristante", "Cuadrado", "Dacourt", "Darmian", "Davids", "DeBruyne", "DeCeglie",
+      "DeLigt", "DeRossi", "DeZerbi", "DelPiero", "Dendoncker", "Diaz", "Diarra", "Donnarumma", "Doumbia", "Dragowski",
+      "Duarte", "Dudek", "Dybala", "Eder", "Ederson", "ElShaarawy", "Elia", "Enrique", "Esposito", "Estigarribia",
+      "Eto’o", "Fabinho", "Fabbri", "Facchetti", "Falcao", "Falcone", "Faraoni", "Farnerud", "Fazio",
+      "Ferrante", "Ferrari", "Ferreira", "Figueiredo", "Filippi", "Fiorillo", "Floccari", "Forlan", "Frabotta", "Franchi",
+      "Gabbiadini", "Gagliardini", "Garcia", "Gattuso", "Giaccherini", "Gomes", "Gomez", "Goncalves", "Gonzalez", "Gosens",
+      "Greco", "Grifo", "Guarente", "Gueye", "Hakimi", "Handanovic", "Hasebe", "Hernandez",
+      "Higuain", "Hoedt", "Icardi", "Ilicic", "Immobile", "Ince", "Inzaghi", "Isak",
+      "Jair", "Jankulovski", "Jorginho", "Kabore", "Kakà", "Kaladze", "Kalinic", "Kamara", "Karagounis",
+      "Karamoh", "Karsdorp", "Kessie", "Kimmich", "Kjaer", "Kolarov", "Kouame", "Koulibaly", "Kovacic", "Kramer",
+      "Krunic", "Kucka", "Kudus", "Lainer", "Lapadula", "Lazaro", "Leao", "Leroy", "Lichtsteiner",
+      "Llorente", "Lopez", "Luiz", "Lukaku", "Luperto", "Maignan", "Mancini", "Mandzukic", "Manolas", "Mannini",
+      "Maresca", "Marin", "Martinez", "Martins", "Mata", "Mauri", "Maxwell", "Medel", "Melo",
+      "Menez", "Meret", "Miccoli", "Milanetto", "Milinkovic", "Milito", "Modesto", "Montero", "Montolivo", "Motta",
+      "Muñoz", "Musso", "Nainggolan", "Nesta", "Negro", "Nolito", "Obiang",
+      "Ochoa", "Olsen", "Ospina", "Palacio", "Paletta", "Pandev",
+      "Paredes", "Pastore", "Pato", "Pazzini", "Pellegri", "Pellegrini", "Pereira", "Perin", "Peruzzi",
+      "Pessotto", "Piatek", "Piccoli", "Pisani", "Pizarro", "Podolski", "Poli",
+      "Poulsen", "Pozzi", "Prandelli", "Puyol", "Quagliarella", "Quaresma", "Raiola", "Ranocchia", "Ravanelli",
+      "Recoba", "Redondo", "Reina", "Ricci", "Rodriguez", "Rojo", "Romagnoli",
+      "Rossi", "Rudiger", "Ruiz", "Sacchi", "Salah", "Salas", "Samardzic", "Sanchez", "Santana", "Santos",
+      "Sarri", "Saviola", "Sculli", "Seedorf", "Shaqiri", "Silva", "Simic", "Sirigu",
+      "Skriniar", "Sosa", "Spalletti", "Spinazzola", "Stankovic", "Suarez", "Taarabt", "Taison", "Terry", "Thiago",
+      "Totti", "Torres", "Traore", "Trotta", "Umtiti", "Udogie", "Upamecano", "Valeri", "Varela", "Vecino",
+      "Ventura", "Verdi", "Veron", "Honda", "Rooney", "Drogba", "Verratti", "Vidal", "Vieira", "Villa", "Vlahovic", "Volpi",
+      "Walker", "Xhaka", "Kamda", "Yilmaz", "Zaccagni", "Zanetti", "Zaza", "Zidane",
+      "Zlatan", "Zola", "Zapata", "Zarate", "Zaniolo", "Zubimendi", "Aké", "Alvarez", "Bennacer", "Boloca",
+      "Ciervo", "Depaoli", "Dimarco", "Estupiñán", "Ferlaino", "Galeno", "Gyasi", "Højlund",
+      "Ibrahimi", "Kulusevski", "Mount", "Nkunku", "Orsolini", "Parisi", "Petagna", "Pobega", "Reijnders", "Sundqvist",
+      "Tsimikas", "Ünder", "Weah", "Xavi", "Yarmolenko", "Zakaria", "Zirkzee", "Benetti", "Baldé",
+      "Bellingham", "DeLigt", "DeJong", "Foden", "Gvardiol", "Mané", "Neymar", "Messi", "Rodrygo", "Vinícius",
+      "Mbappé", "Konaté", "Saka", "Tchouaméni", "Ödegaard", "Garnacho", "Singo", "Zaha",
+      "Fofana", "Sorloth", "White", "Rice", "Pulisic", "Origi", "Dolberg",
+      "Reina", "Felix", "Sanches", "Cancelo", "Dias", "Silvestri", "Gatti", "Pinamonti",
+
+
+      "Allegri", "Ancelotti", "Benitez", "Bielsa", "Blanc", "Capello", "Conte", "DeZerbi", "Deschamps", "DiBiasi",
+      "DiFrancesco", "Donadoni", "Ferguson", "Garcia", "Gasperini", "Guardiola", "Haaland", "Hiddink",
+      "Hodgson", "Inzaghi", "Kovac", "Juric", "Klopp", "Lautaro", "Lopetegui", "VanGaal", "Mancini",
+      "Maradona", "Martinez", "Mazzarri", "Montella", "Mourinho", "Otamendi", "Pioli", "Pochettino", "Ranieri", "Reina",
+      "Rijkaard", "Sacchi", "Sarri", "Scaloni", "Seedorf", "Simeone", "Spalletti", "Souness",
+      "Sousa", "Suarez", "SvenGoran", "Tedesco", "Terry", "Thiago", "Tuchel", "VanBronckhorst", "VanDerVaart", "VanDijk",
+      "Vieira", "Wenger", "Zaccheroni", "Zambrotta", "Zenga", "Zidane", "Zola", "Zubizarreta",
+      "Alvarez", "ArneSlot", "Barça", "Bayern", "Bravo", "Crespo",
+      "Curci", "Dalic", "Darmian", "Davids", "DeCeglie", "DeLigt", "DelPiero", "Dzeko", "Ederson", "ElShaarawy",
+      "Eriksen", "Esposito", "Fabinho", "Farioli", "Fekir", "Fermín", "Fonseca", "Galtier",
+      "Hakimi", "Handanovic", "Jimenez", "Kante",
+
+      "Koulibaly",
+      "Lamine", "Lozano", "Maicon", "Mahrez", "Mbappé", "Melo", "Milik", "Molina",
+      "Moutinho", "Navarro", "Ndidi", "Neto", "Ocampos", "Osimhen", "Palermo",
+      "Pandev", "Paredes", "Parma", "Patrice", "Pato", "Peeters", "Pellegrini", "Pinto", "Pizarro"
+      ,
+      "Moggi", "DiCanio", "Pardo", "Zampa", "Pizzul", "Tardelli",
+      "Raiola", "Lippi", "Gentile", "Mazzocchi", "DiMarzio", "Pedullà", "Bergonzi", "Corini", "Facchetti",
+      "Zanetti", "Galiani", "Rimedio", "Varriale", "Balzaretti", "Longhi",
+      "Sconcerti", "Criscitiello",
+      "Zazzaroni", "DiCarlo", "Callegari",
+      "Giunta", "Rocchi", "Caressa", "Cattaneo"
+      ,
+      "Berlusconi", "Moratti", "Agnelli", "Thohir", "DeLaurentiis", "Lotito", "Pozzo", "Siviero", "Ferrero", "DellaValle",
+      "Cellino", "Moggi", "Pastorino", "Rossi", "Tacopina", "Zhang", "Commisso", "Tombolini", "Fenucci", "Spinelli",
+      "Percassi", "Mancini", "Ghirelli", "Baldini", "Beretta",
+      "Cairo", "Riva", "Marotta",
+      "Messi",
+      "Ronaldo",
+      "Pelé",
+      "Maradona",
+      "Cruyff",
+      "Beckenbauer",
+      "Zidane",
+      "Ronaldinho",
+      "Neymar",
+      "Mbappé",
+      "Haaland",
+      "De Bruyne",
+      "Modrić",
+      "Iniesta",
+      "Xavi",
+      "Salah",
+      "Lewandowski",
+      "Henry",
+      "Platini",
+      "Van Basten",
+      "Gullit",
+      "Rijkaard",
+      "Best",
+      "Eusébio",
+      "Figo",
+      "Rooney",
+      "Beckham",
+      "Baggio",
+      "Maldini",
+      "Baresi",
+      "Cannavaro",
+      "Pirlo",
+      "Totti",
+      "Del Piero",
+      "Buffon",
+      "Nesta",
+      "Chiellini",
+      "Bonucci",
+      "Barella",
+      "Neuer",
+      "Casillas",
+      "Ramos",
+      "Piqué",
+      "Alves",
+      "Carlos",
+      "Cafu",
+      "Kaká",
+      "Rivaldo",
+      "Romário",
+      "Shevchenko"
+      ,
+      "San Siro",
+      "Stadio Olimpico",
+      "Allianz Stadium",
+      "Camp Nou",
+      "Santiago Bernabéu",
+      "Wembley",
+      "Old Trafford",
+      "Anfield",
+      "Signal Iduna Park",
+      "Allianz Arena",
+      "Parc des Princes",
+      "Maracanã",
+      "La Bombonera",
+      "Azteca",
+      "Stanford Bridge"
+      ,
+
+      "Juventus",
+      "Milan",
+      "Inter",
+      "Roma",
+      "Lazio",
+      "Napoli",
+      "Atalanta",
+      "Fiorentina",
+      "Torino",
+      "Bologna",
+      "Real Madrid",
+      "Barcelona",
+      "Atletico Madrid",
+      "Sevilla",
+      "Valencia",
+      "Manchester United",
+      "Manchester City",
+      "Liverpool",
+      "Chelsea",
+      "Arsenal",
+      "Tottenham",
+      "Newcastle",
+      "Bayern Monaco",
+      "Borussia Dortmund",
+      "RB Leipzig",
+      "Bayer Leverkusen",
+      "Paris Saint-Germain",
+      "Olympique Marsiglia",
+      "Lione",
+      "Monaco",
+      "Ajax",
+      "PSV",
+      "Feyenoord",
+      "Porto",
+      "Benfica",
+      "Sporting",
+      "Galatasaray",
+      "Fenerbahce",
+      "Besiktas",
+      "Celtic",
+      "Rangers",
+      "Boca Juniors",
+      "River Plate",
+      "Flamengo",
+      "Palmeiras",
+      "Santos",
+      "Corinthians",
+      "LA Galaxy",
+      "Inter Miami",
+      "Al Hilal",
+      "Juventus", // esempio di duplicato
+      "Milan"
+    ];
     // Creare una nuova lista senza duplicati
-    const parole = paroledoppie.filter((item, index) => {
+    let parole = paroledoppie.filter((item, index) => {
       return paroledoppie.indexOf(item) === index;
     });
 
     let ruolo = "";
     const selezionaruolo = document.getElementById("selezionaruolo");
+    const selezionatipoparole = document.getElementById("selezionatipoparole");
     const titologriglia = document.getElementById("titoloGriglia");
     const grandezzagriglia = document.getElementById("grandezzagriglia");
     const numeroparole1 = document.getElementById("numeroparole1");
@@ -290,7 +576,8 @@
     let parole2 = 8;
     let parolegialle = 7;
     let parolenere = 1;
-   
+    let bluRimanenti = 0;
+    let rossoRimanenti = 0;
     // HASH STRING → SEED
     function stringToSeed(str) {
       let hash = 0;
@@ -303,12 +590,13 @@
 
     // PRNG deterministico
     function mulberry32(seed) {
+      let m = 0x80000000;
+      let a = 1103515245;
+      let c = 12345;
+      let state = seed % m;
       return function () {
-        seed |= 0;
-        seed = seed + 0x6D2B79F5 | 0;
-        let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
-        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        state = (a * state + c) % m;
+        return state / m;
       }
     }
 
@@ -324,6 +612,22 @@
         arr.splice(index, 1);
       }
       return result;
+    }
+
+
+    function aggiornaContatori(sfondo) {
+      const tiles = document.querySelectorAll(".tile");
+      console.log(sfondo);
+      if (sfondo == "rgb(244, 67, 54)") {
+        rossoRimanenti--;
+      } 
+
+      if (sfondo == "rgb(33, 150, 243)") {
+        bluRimanenti--;
+      }
+
+      document.getElementById("bluCounter").textContent = `Blu Mancanti: ${bluRimanenti}`;
+      document.getElementById("rossoCounter").textContent = `Rosse Mancanti: ${rossoRimanenti}`;
     }
 
     // CREA GRIGLIA
@@ -349,16 +653,25 @@
           parole1 = parseInt(numeroparole1.value)
           parole2 = parseInt(numeroparole2.value)
           parolenere = parseInt(numeroparolenere.value);
-          parolegialle = parseInt(grandezzagriglia.value) - parseInt(numeroparole1.value) - parseInt(numeroparole2.value) - parseInt(numeroparolenere.value) ;
+          parolegialle = parseInt(grandezzagriglia.value) - parseInt(numeroparole1.value) - parseInt(numeroparole2.value) - parseInt(numeroparolenere.value);
         } else {
           alert("Il numero di parole totali è troppo piccolo per le impostazioni selezionate");
           return;
+        }
+        if (selezionatipoparole.value == "CALCIO") {
+          parole = paroledoppiegiocatori.filter((item, index) => {
+            return paroledoppiegiocatori.indexOf(item) === index;
+          });
         }
         const grid = document.getElementById("grid");
         const size = Math.sqrt(dimensione);
         grid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
         grid.style.gridTemplateRows = `repeat(${size}, 1fr)`;
-        
+
+        // Aggiorna altezza delle tessere manualmente
+        const tiles = grid.querySelectorAll('.tile');
+        tiles.forEach(tile => tile.style.height = `${grid.clientWidth / size - 5}px`); // 5 = gap
+
 
       }
       function controllaVittoria() {
@@ -395,8 +708,20 @@
       grid.innerHTML = "";
 
       const estratti = pickSeeded(parole, dimensione, password);
-
+     
       const tessereColor = generaTessere(password); // ottieni i colori
+      if (primoColore == "rosso") {
+        document.getElementById("bluCounter").textContent = `Blu Mancanti: ${parole1}`;
+        document.getElementById("rossoCounter").textContent = `Rosse Mancanti: ${parole2}`;
+        bluRimanenti = parole1
+        rossoRimanenti = parole2
+      } else {
+        document.getElementById("bluCounter").textContent = `Blu Mancanti: ${parole2}`;
+        document.getElementById("rossoCounter").textContent = `Rosse Mancanti: ${parole1}`;
+        bluRimanenti = parole2
+        rossoRimanenti = parole1
+      }
+  
 
       estratti.forEach((parola, idx) => {
         const tile = document.createElement("div");
@@ -436,6 +761,7 @@
               tile.appendChild(x);
 
               tile.dataset.selezionato = "true";
+              aggiornaContatori(tile.style.background);
               controllaVittoria();
             }
           };
@@ -455,10 +781,11 @@
               }
               tile.dataset.mostra = "true";
               tile.dataset.selezionato = "true";
-
+              aggiornaContatori(tile.style.background);
               controllaVittoria();
             }
           };
+
         }
 
         grid.appendChild(tile);
@@ -466,7 +793,7 @@
       // Funzione per controllare vittoria o sconfitta
 
     }
-
+    let primoColore = "";
     document.getElementById("bottoneAvanti").onclick = generaGriglia;
     function generaTessere(password) {
       const seed = stringToSeed(password);
@@ -480,23 +807,17 @@
         const j = Math.floor(rand() * (i + 1));
         [numeri[i], numeri[j]] = [numeri[j], numeri[i]];
       }
-
+         
       // Dividi i numeri
       const gruppo1 = numeri.slice(0, parole1);  // 9 tessere
-      const gruppo2 = numeri.slice(parole1, parole1+parole2); // 8 tessere
-      const gruppo3 = numeri.slice(parole1 + parole2, parole1 + parole2+parolenere); // 1 tessera nera
+      const gruppo2 = numeri.slice(parole1, parole1 + parole2); // 8 tessere
+      const gruppo3 = numeri.slice(parole1 + parole2, parole1 + parole2 + parolenere); // 1 tessera nera
       const gruppo4 = numeri.slice(parole1 + parole2 + parolenere, dimensione); // 7 tessere gialle
 
       // Decide casualmente quale colore inizia
-      const primoColore = rand() < 0.5 ? 'blu' : 'rosso';
+       primoColore = rand() < 0.5 ? 'blu' : 'rosso';
       const secondoColore = primoColore === 'blu' ? 'rosso' : 'blu';
-      if (primoColore == 'rosso') {
-        titologriglia.textContent = "Inizia squadra blu";
-        titologriglia.style.color="blue"
-      } else {
-        titologriglia.textContent = "Inizia squadra rossa"
-        titologriglia.style.color = "red"
-      }
+    
       // Mescola interno gruppo1 per assegnare colore
       const gruppo1Color = [];
       for (let i = 0; i < parole1; i++) {
