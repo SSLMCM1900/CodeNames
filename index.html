@@ -197,6 +197,14 @@
           <input type="number" id="numeroparole2" name="numeroparole2"
                  step="1" value="8" required>
         </div>
+
+
+        <div class="form-group" id="camponumeroparoleverdi">
+          <label for="numeroparoleverdi">Numero Carte Verdi</label>
+          <input type="number" id="numeroparoleverdi" name="numeroparoleverdi"
+                 step="1" value="0" required>
+        </div>
+
         <div class="form-group" id="camponunmeroparolenere">
           <label for="numeroparolenere">Numero Parole Nere</label>
           <input type="number" id="numeroparolenere" name="numeroparolenere"
@@ -1951,6 +1959,10 @@
       return paroledoppie.indexOf(item) === index;
     });
 
+    const numeroparoleverdi = document.getElementById("numeroparoleverdi");
+    let paroleverdi = 0;
+
+
     let ruolo = "";
     const selezionaruolo = document.getElementById("selezionaruolo");
     const selezionatipoparole = document.getElementById("selezionatipoparole");
@@ -2037,12 +2049,25 @@
         else {
           ruolo = "Civile";
         }
-        if (parseInt(grandezzagriglia.value) - parseInt(numeroparole1.value) - parseInt(numeroparole2.value) - parseInt(numeroparolenere.value) >= 0) {
+
+        if (
+          parseInt(grandezzagriglia.value)
+          - parseInt(numeroparole1.value)
+          - parseInt(numeroparole2.value)
+          - parseInt(numeroparolenere.value)
+          - parseInt(numeroparoleverdi.value)
+          >= 0
+        )
+ {
           dimensione = parseInt(grandezzagriglia.value)
           parole1 = parseInt(numeroparole1.value)
           parole2 = parseInt(numeroparole2.value)
           parolenere = parseInt(numeroparolenere.value);
-          parolegialle = parseInt(grandezzagriglia.value) - parseInt(numeroparole1.value) - parseInt(numeroparole2.value) - parseInt(numeroparolenere.value);
+
+          paroleverdi = parseInt(numeroparoleverdi.value);
+          parolegialle = parseInt(grandezzagriglia.value)
+            - parole1 - parole2 - parolenere - paroleverdi;
+
         } else {
           alert("Il numero di parole totali è troppo piccolo per le impostazioni selezionate");
           return;
@@ -2145,6 +2170,12 @@
             case 'blu': tile.style.background = "#2196F3"; tile.style.color = "white"; break;
             case 'rosso': tile.style.background = "#F44336"; tile.style.color = "white"; break;
             case 'nero': tile.style.background = "#000"; tile.style.color = "white"; break;
+
+            case 'verde':
+              tile.style.background = "#90EE90";
+              tile.style.color = "black";
+              break;
+
             case 'giallo': tile.style.background = "#FFEB3B"; tile.style.color = "black"; break;
           }
 
@@ -2170,6 +2201,11 @@
               tile.dataset.selezionato = "true";
               aggiornaContatori(tile.style.background);
               controllaVittoria();
+
+              if (tile.dataset.colore === "verde") {
+                alert("Puoi comunicare una carta a tuo piacere alla squadra. Il colore deve essere verde chiaro");
+              }
+
             }
           };
 
@@ -2184,12 +2220,21 @@
                 case 'blu': tile.style.background = "#2196F3"; tile.style.color = "white"; break;
                 case 'rosso': tile.style.background = "#F44336"; tile.style.color = "white"; break;
                 case 'nero': tile.style.background = "#000"; tile.style.color = "white"; break;
+                case 'verde':
+                  tile.style.background = "#90EE90";
+                  tile.style.color = "black";
+                  break;
                 case 'giallo': tile.style.background = "#FFEB3B"; tile.style.color = "black"; break;
               }
               tile.dataset.mostra = "true";
               tile.dataset.selezionato = "true";
               aggiornaContatori(tile.style.background);
               controllaVittoria();
+
+              if (tile.dataset.colore === "verde") {
+                alert("Il tuo capitano ti può comunicare una carta a piacere");
+              }
+
             }
           };
 
@@ -2219,7 +2264,17 @@
       const gruppo1 = numeri.slice(0, parole1);  // 9 tessere
       const gruppo2 = numeri.slice(parole1, parole1 + parole2); // 8 tessere
       const gruppo3 = numeri.slice(parole1 + parole2, parole1 + parole2 + parolenere); // 1 tessera nera
-      const gruppo4 = numeri.slice(parole1 + parole2 + parolenere, dimensione); // 7 tessere gialle
+    
+
+      const gruppo5 = numeri.slice(
+        parole1 + parole2 + parolenere,
+        parole1 + parole2 + parolenere + paroleverdi
+      );
+
+      const gruppo4 = numeri.slice(
+        parole1 + parole2 + parolenere + paroleverdi,
+        dimensione
+      );
 
       // Decide casualmente quale colore inizia
        primoColore = rand() < 0.5 ? 'blu' : 'rosso';
@@ -2229,7 +2284,7 @@ const gruppo2Color = Array(parole2).fill(primoColore);
 
       // Gruppo3 → nero
       const gruppo3Color = Array(parolenere).fill('nero');
-
+      const gruppo5Color = Array(paroleverdi).fill('verde');
       // Gruppo4 → giallo
       const gruppo4Color = Array(parolegialle).fill('giallo');
 
@@ -2238,6 +2293,11 @@ const gruppo2Color = Array(parole2).fill(primoColore);
       for (let i = 0; i < parole1; i++) { tessere[gruppo1[i]] = gruppo1Color[i]; }
       for (let i = 0; i < parole2; i++) { tessere[gruppo2[i]] = gruppo2Color[i]; }
       for (let i = 0; i < parolenere; i++) { tessere[gruppo3[i]] = 'nero'; }
+
+      for (let i = 0; i < paroleverdi; i++) {
+        tessere[gruppo5[i]] = 'verde';
+      }
+
       for (let i = 0; i < parolegialle; i++) { tessere[gruppo4[i]] = 'giallo'; }
 
       return tessere; // oggetto {numero: colore}
